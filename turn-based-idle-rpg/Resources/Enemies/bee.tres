@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://clpm0av1h7s3g"]
+
+[ext_resource type="Script" uid="uid://mdpvkwyu7y5q" path="res://Scripts/EnemyData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+enemy_name = "Bee"
+max_hp = 40
+atk = 8
+def = 3
+spd = 6
+gold_reward = 15

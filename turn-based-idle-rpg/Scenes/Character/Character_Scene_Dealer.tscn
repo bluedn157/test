@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dg06n4cx6vbjx"]
+
+[ext_resource type="Script" uid="uid://b5psnh1jw3rb8" path="res://Scripts/Character_Dealer.gd" id="1_ngsxy"]
+[ext_resource type="Resource" path="res://Resources/Characters/dealer.tres" id="2_data"]
+
+[node name="CharacterSceneDealer" type="Node" unique_id=681126142]
+script = ExtResource("1_ngsxy")
+data = ExtResource("2_data")

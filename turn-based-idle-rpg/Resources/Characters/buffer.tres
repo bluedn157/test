@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://kk3dh5c3xnh7"]
+
+[ext_resource type="Script" uid="uid://dwpoh2r0cswcq" path="res://Scripts/CharacterData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+character_name = "Buffer"
+character_role = "buffer"
+atk = 12
+def = 8
+spd = 14

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://dxv2mde1nwm14"]
+
+[ext_resource type="Script" uid="uid://mdpvkwyu7y5q" path="res://Scripts/EnemyData.gd" id="1_0hkfx"]
+
+[resource]
+script = ExtResource("1_0hkfx")
+enemy_name = "Baller"
+max_hp = 800
+atk = 40
+def = 15
+spd = 12
+gold_reward = 500
+crystal_reward = 10
+is_boss = true

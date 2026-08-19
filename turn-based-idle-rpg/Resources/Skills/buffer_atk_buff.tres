@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://Scripts/SkillData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+skill_id = "atk_buff"
+skill_name = "공격력 강화"
+skill_type = "buff"
+description = "아군 한 명의 공격력을 3턴 동안 25% 증가시킨다."
+mp_cost = 10
+cooldown = 1
+power = 0.25

@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://e9m4p6z1xdlma"]
+
+[ext_resource type="Script" path="res://Scripts/Character_Buffer.gd" id="1_ngsxy"]
+[ext_resource type="Resource" path="res://Resources/Characters/buffer.tres" id="2_data"]
+
+[node name="CharacterSceneBuffer" type="Node"]
+script = ExtResource("1_ngsxy")
+data = ExtResource("2_data")

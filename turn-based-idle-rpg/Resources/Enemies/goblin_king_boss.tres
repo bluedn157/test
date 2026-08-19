@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://vxmt6fv1m58i"]
+
+[ext_resource type="Script" uid="uid://mdpvkwyu7y5q" path="res://Scripts/EnemyData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+enemy_name = "Goblin King"
+max_hp = 500
+atk = 25
+spd = 8
+gold_reward = 0
+crystal_reward = 5
+is_boss = true

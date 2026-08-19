@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c8k2n4x9vbjhy"]
+
+[ext_resource type="Script" path="res://Scripts/Character_Healer.gd" id="1_ngsxy"]
+[ext_resource type="Resource" path="res://Resources/Characters/healer.tres" id="2_data"]
+
+[node name="CharacterSceneHealer" type="Node"]
+script = ExtResource("1_ngsxy")
+data = ExtResource("2_data")

@@ -1,0 +1,516 @@
+[gd_scene format=3 uid="uid://dx8thx2e6yfjh"]
+
+[ext_resource type="Script" uid="uid://b77gaamtdbo6i" path="res://Scripts/Main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://bpyp2j7ljb88t" path="res://Scripts/UpgradePanel.gd" id="2_upgrade_panel"]
+[ext_resource type="Script" uid="uid://bdwdhfm5c2m7c" path="res://Scripts/SettingsPanel.gd" id="3_settings_panel"]
+[ext_resource type="Script" uid="uid://dmppgkoee8m4d" path="res://Scripts/DungeonPanel.gd" id="4_dungeon_panel"]
+[ext_resource type="Script" uid="uid://biawqysn13euy" path="res://Scripts/MonsterPanel.gd" id="5_monster_panel"]
+
+[node name="Main" type="Control" unique_id=962122392]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=258554035]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BattlePanel" type="Panel" parent="HBoxContainer" unique_id=230765569]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/BattlePanel" unique_id=677814922]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label (Dungeon Info)" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=1246941719]
+layout_mode = 2
+text = "DUNGEON 1 - 1F"
+
+[node name="GoldLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=810234580]
+layout_mode = 2
+text = "Gold: 0"
+
+[node name="CrystalLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=810234581]
+layout_mode = 2
+text = "Crystal: 0"
+
+[node name="EnemyArea" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=748067484]
+layout_mode = 2
+
+[node name="EnemyUnit1" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea" unique_id=1737255173]
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1" unique_id=900001001]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/Portrait" unique_id=900003001]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1" unique_id=900002001]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="EnemyInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1" unique_id=99119428]
+layout_mode = 2
+
+[node name="EnemyName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/EnemyInfo" unique_id=1910168015]
+layout_mode = 2
+text = "Slime"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/EnemyInfo" unique_id=1843519845]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/EnemyInfo/HPRow" unique_id=470904475]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/EnemyInfo/HPRow" unique_id=302383055]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="EnemyHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit1/EnemyInfo/HPRow" unique_id=300457601]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="EnemyUnit2" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea" unique_id=810234590]
+visible = false
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2" unique_id=900001002]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/Portrait" unique_id=900003002]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2" unique_id=900002002]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="EnemyInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2" unique_id=810234591]
+layout_mode = 2
+
+[node name="EnemyName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/EnemyInfo" unique_id=810234592]
+layout_mode = 2
+text = "Slime"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/EnemyInfo" unique_id=810234593]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/EnemyInfo/HPRow" unique_id=810234594]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/EnemyInfo/HPRow" unique_id=810234595]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="EnemyHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit2/EnemyInfo/HPRow" unique_id=810234596]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="EnemyUnit3" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea" unique_id=810234597]
+visible = false
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3" unique_id=900001003]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/Portrait" unique_id=900003003]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3" unique_id=900002003]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="EnemyInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3" unique_id=810234598]
+layout_mode = 2
+
+[node name="EnemyName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/EnemyInfo" unique_id=810234599]
+layout_mode = 2
+text = "Slime"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/EnemyInfo" unique_id=810234600]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/EnemyInfo/HPRow" unique_id=810234601]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/EnemyInfo/HPRow" unique_id=810234602]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="EnemyHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/EnemyArea/EnemyUnit3/EnemyInfo/HPRow" unique_id=810234603]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="BattleSpace" type="Control" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=494761825]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerArea" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=1985698773]
+layout_mode = 2
+
+[node name="PlayerUnit1" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea" unique_id=233399831]
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1" unique_id=900001004]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/Portrait" unique_id=900003004]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1" unique_id=900002004]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="PlayerInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1" unique_id=1235133837]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo" unique_id=2117553623]
+layout_mode = 2
+text = "DEALER"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo" unique_id=116595280]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/HPRow" unique_id=497075276]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/HPRow" unique_id=1709009945]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/HPRow" unique_id=1737272693]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="MPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo" unique_id=1424698001]
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/MPRow" unique_id=1106439620]
+layout_mode = 2
+text = "MP "
+
+[node name="MPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/MPRow" unique_id=547345625]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerMP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit1/PlayerInfo/MPRow" unique_id=2078396497]
+layout_mode = 2
+text = "50 / 50"
+
+[node name="PlayerUnit2" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea" unique_id=810234610]
+visible = false
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2" unique_id=900001005]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/Portrait" unique_id=900003005]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2" unique_id=900002005]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="PlayerInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2" unique_id=810234611]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo" unique_id=810234612]
+layout_mode = 2
+text = "HEALER"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo" unique_id=810234613]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/HPRow" unique_id=810234614]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/HPRow" unique_id=810234615]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/HPRow" unique_id=810234616]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="MPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo" unique_id=810234617]
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/MPRow" unique_id=810234618]
+layout_mode = 2
+text = "MP "
+
+[node name="MPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/MPRow" unique_id=810234619]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerMP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit2/PlayerInfo/MPRow" unique_id=810234620]
+layout_mode = 2
+text = "50 / 50"
+
+[node name="PlayerUnit3" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea" unique_id=810234630]
+visible = false
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3" unique_id=900001006]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/Portrait" unique_id=900003006]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3" unique_id=900002006]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="PlayerInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3" unique_id=810234631]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo" unique_id=810234632]
+layout_mode = 2
+text = "TANKER"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo" unique_id=810234633]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/HPRow" unique_id=810234634]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/HPRow" unique_id=810234635]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/HPRow" unique_id=810234636]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="MPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo" unique_id=810234637]
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/MPRow" unique_id=810234638]
+layout_mode = 2
+text = "MP "
+
+[node name="MPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/MPRow" unique_id=810234639]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerMP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit3/PlayerInfo/MPRow" unique_id=810234640]
+layout_mode = 2
+text = "50 / 50"
+
+[node name="PlayerUnit4" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea" unique_id=810234650]
+visible = false
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4" unique_id=900001007]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/Portrait" unique_id=900003007]
+custom_minimum_size = Vector2(112, 112)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4" unique_id=900002007]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="PlayerInfo" type="VBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4" unique_id=810234651]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo" unique_id=810234652]
+layout_mode = 2
+text = "BUFFER"
+
+[node name="HPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo" unique_id=810234653]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/HPRow" unique_id=810234654]
+layout_mode = 2
+text = "HP "
+
+[node name="HPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/HPRow" unique_id=810234655]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerHP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/HPRow" unique_id=810234656]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="MPRow" type="HBoxContainer" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo" unique_id=810234657]
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/MPRow" unique_id=810234658]
+layout_mode = 2
+text = "MP "
+
+[node name="MPBar" type="ProgressBar" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/MPRow" unique_id=810234659]
+custom_minimum_size = Vector2(90, 14)
+layout_mode = 2
+value = 100.0
+
+[node name="PlayerMP" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer/PlayerArea/PlayerUnit4/PlayerInfo/MPRow" unique_id=810234660]
+layout_mode = 2
+text = "50 / 50"
+
+[node name="BattleMessage" type="Label" parent="HBoxContainer/BattlePanel/VBoxContainer" unique_id=686006214]
+layout_mode = 2
+text = "Battle Ready"
+
+[node name="MenuPanel" type="Panel" parent="HBoxContainer" unique_id=817883444]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MenuPanel" unique_id=1646816974]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=1029982790]
+layout_mode = 2
+text = "Menu"
+
+[node name="UpgradeButton" type="Button" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=528560090]
+layout_mode = 2
+text = "Upgrade"
+
+[node name="MonsterButton" type="Button" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=1517652742]
+layout_mode = 2
+text = "Monster"
+
+[node name="DungeonButton" type="Button" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=487305240]
+layout_mode = 2
+text = "Dungeon"
+
+[node name="SettingsButton" type="Button" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=2100763688]
+layout_mode = 2
+text = "Settings"
+
+[node name="ContentArea" type="Control" parent="HBoxContainer/MenuPanel/VBoxContainer" unique_id=810234561]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UpgradePanel" type="Panel" parent="HBoxContainer/MenuPanel/VBoxContainer/ContentArea" unique_id=810234562]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_upgrade_panel")
+
+[node name="MonsterPanel" type="Panel" parent="HBoxContainer/MenuPanel/VBoxContainer/ContentArea" unique_id=810234566]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_monster_panel")
+
+[node name="DungeonPanel" type="Panel" parent="HBoxContainer/MenuPanel/VBoxContainer/ContentArea" unique_id=810234568]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_dungeon_panel")
+
+[node name="SettingsPanel" type="Panel" parent="HBoxContainer/MenuPanel/VBoxContainer/ContentArea" unique_id=810234570]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_settings_panel")

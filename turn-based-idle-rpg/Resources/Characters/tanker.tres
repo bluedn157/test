@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://cq1kh1pwi8o4"]
+
+[ext_resource type="Script" uid="uid://dwpoh2r0cswcq" path="res://Scripts/CharacterData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+character_name = "Tanker"
+character_role = "tanker"
+max_hp = 160
+def = 18
+spd = 8
