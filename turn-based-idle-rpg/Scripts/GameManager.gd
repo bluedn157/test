@@ -10,6 +10,8 @@ signal data_reset
 ## 몬스터 도감에 새 몬스터가 등록될 때(=처음 만났을 때) emit. MonsterPanel이 구독해서
 ## 다시 그리게 한다.
 signal enemy_discovered(enemy_path: String)
+## 게임 속도(현재 적용값 / 자동 최대 설정)가 바뀔 때 emit. SettingsPanel이 구독해서 다시 그린다.
+signal battle_speed_changed
 
 const SAVE_PATH := "user://save_data.cfg"
 
@@ -48,6 +50,13 @@ const DUNGEON_ENEMY_DATA := {
 
 var gold: int = 0
 var crystal: int = 0
+
+## 실제로 Engine.time_scale에 적용되는 현재 게임 속도 배율 (1.0 ~ get_battle_speed_multiplier()).
+var battle_speed_current: float = 1.0
+## true면 "게임 속도" 공용 업그레이드를 살 때마다 battle_speed_current가 자동으로 최댓값(레벨 기준)으로
+## 맞춰지고, 설정 화면에서 직접 조절할 수 없다. false면 업그레이드를 사도 현재 속도는 그대로 유지되고,
+## 설정 화면 슬라이더로 1배~최댓값 사이에서 직접 조절할 수 있다.
+var battle_speed_auto_max: bool = true
 
 var current_dungeon: int = 1
 var current_floor: int = 1
@@ -264,7 +273,11 @@ func purchase_common_upgrade(key: String) -> bool:
 	gold -= cost
 	common_upgrades[key] += 1
 	if key == "battle_speed":
+		if battle_speed_auto_max:
+			# 자동 최대 배속 설정이 켜져 있으면, 업그레이드로 최댓값이 오른 즉시 현재 속도도 그만큼 올린다.
+			battle_speed_current = get_battle_speed_multiplier()
 		_apply_battle_speed()
+		battle_speed_changed.emit()
 	gold_changed.emit()
 	save_game()
 	return true
@@ -312,10 +325,34 @@ func get_battle_speed_multiplier_at(level: int) -> float:
 	return 1.0 + boost_percent / 100.0
 
 
-## 현재 게임 속도 업그레이드 레벨을 엔진 배속(Engine.time_scale)에 반영한다.
+## 현재 battle_speed_current 값을 엔진 배속(Engine.time_scale)에 반영한다.
 ## 전투 딜레이(get_tree().create_timer)와 연출 Tween 모두 이 값을 따라 함께 빨라진다.
 func _apply_battle_speed() -> void:
-	Engine.time_scale = get_battle_speed_multiplier()
+	Engine.time_scale = battle_speed_current
+
+
+## 게임 속도를 직접 설정한다 (설정 화면의 슬라이더 등에서 호출). "자동 최대 배속" 체크가
+## 켜져 있는 동안에는 직접 조절이 불가능하므로 무시하고 false를 반환한다.
+func set_battle_speed(value: float) -> bool:
+	if battle_speed_auto_max:
+		return false
+	battle_speed_current = clamp(value, 1.0, get_battle_speed_multiplier())
+	_apply_battle_speed()
+	battle_speed_changed.emit()
+	save_game()
+	return true
+
+
+## "자동 최대 배속" 체크박스 토글. 켜면 즉시 현재 속도를 최댓값으로 맞추고 이후 직접 조절을 막는다.
+## 끄면 현재 속도는 그대로 유지한 채 1배~최댓값 사이에서 직접 조절할 수 있게 된다.
+func set_battle_speed_auto_max(enabled: bool) -> void:
+	battle_speed_auto_max = enabled
+	if enabled:
+		battle_speed_current = get_battle_speed_multiplier()
+		_apply_battle_speed()
+	battle_speed_changed.emit()
+	save_game()
+
 
 ## ---------------- 캐릭터 해금 ----------------
 
@@ -633,6 +670,8 @@ func save_game() -> void:
 	config.set_value("player", "current_dungeon", current_dungeon)
 	config.set_value("player", "current_floor", current_floor)
 	config.set_value("player", "max_unlocked_dungeon", max_unlocked_dungeon)
+	config.set_value("player", "battle_speed_current", battle_speed_current)
+	config.set_value("player", "battle_speed_auto_max", battle_speed_auto_max)
 	config.set_value("data", "unlocked_characters", unlocked_characters)
 	config.set_value("data", "common_upgrades", common_upgrades)
 	config.set_value("data", "character_upgrades", character_upgrades)
@@ -652,10 +691,16 @@ func load_game() -> void:
 	current_dungeon = config.get_value("player", "current_dungeon", current_dungeon)
 	current_floor = config.get_value("player", "current_floor", current_floor)
 	max_unlocked_dungeon = config.get_value("player", "max_unlocked_dungeon", max_unlocked_dungeon)
+	battle_speed_current = config.get_value("player", "battle_speed_current", battle_speed_current)
+	battle_speed_auto_max = config.get_value("player", "battle_speed_auto_max", battle_speed_auto_max)
 	unlocked_characters = config.get_value("data", "unlocked_characters", unlocked_characters)
 	var loaded_common_upgrades: Dictionary = config.get_value("data", "common_upgrades", {})
 	for key in loaded_common_upgrades.keys():
 		common_upgrades[key] = loaded_common_upgrades[key]
+	if battle_speed_auto_max:
+		battle_speed_current = get_battle_speed_multiplier()
+	else:
+		battle_speed_current = clamp(battle_speed_current, 1.0, get_battle_speed_multiplier())
 	var loaded_character_upgrades: Dictionary = config.get_value("data", "character_upgrades", {})
 	for role in loaded_character_upgrades.keys():
 		for key in loaded_character_upgrades[role].keys():
@@ -679,6 +724,8 @@ func reset_data() -> void:
 	current_dungeon = 1
 	current_floor = 1
 	max_unlocked_dungeon = 1
+	battle_speed_current = 1.0
+	battle_speed_auto_max = true
 	unlocked_characters = {
 		"dealer": true,
 		"healer": false,
@@ -709,3 +756,4 @@ func reset_data() -> void:
 
 	data_reset.emit()
 	gold_changed.emit()
+	battle_speed_changed.emit()
