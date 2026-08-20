@@ -7,5 +7,5 @@ script = ExtResource("1_data")
 character_name = "Tanker"
 character_role = "tanker"
 max_hp = 160
-def = 18
-spd = 8
+atk = 15
+def = 2

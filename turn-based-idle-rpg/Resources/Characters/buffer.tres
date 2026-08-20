@@ -6,6 +6,6 @@
 script = ExtResource("1_data")
 character_name = "Buffer"
 character_role = "buffer"
-atk = 12
-def = 8
+atk = 20
+def = 0
 spd = 14

@@ -569,6 +569,7 @@ func _create_enemy(data_path: String, dungeon: int) -> Enemy:
 	e.hp = e.max_hp
 	e.atk = int(e.atk * stat_mult)
 	e.def = int(e.def * stat_mult)
+	e.spd = int(e.spd * stat_mult)
 
 	e.gold_reward = int(e.gold_reward * reward_mult)
 	e.crystal_reward = int(e.crystal_reward)
@@ -654,7 +655,8 @@ func _on_battle_message(text: String) -> void:
 
 
 func _on_battle_won(gold_reward: int, crystal_reward: int) -> void:
-	GameManager.add_gold(gold_reward)
+	var streak_bonus: int = GameManager.get_streak_gold_bonus(GameManager.current_floor)
+	GameManager.add_gold(gold_reward + streak_bonus)
 	GameManager.add_crystal(crystal_reward)
 	_refresh_currency_labels()
 

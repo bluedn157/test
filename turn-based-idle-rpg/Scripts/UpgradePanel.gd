@@ -122,6 +122,9 @@ func _render_common_tab() -> void:
 		elif key == "battle_speed":
 			current_text = "%.1f배" % GameManager.get_battle_speed_multiplier()
 			next_text = "%.1f배" % GameManager.get_battle_speed_multiplier_at(level + 1)
+		elif key == "streak_gold_bonus":
+			current_text = "%dG/층" % (level * per_level)
+			next_text = "%dG/층" % ((level + 1) * per_level)
 		else:
 			current_text = "%d%%" % (level * per_level)
 			next_text = "%d%%" % ((level + 1) * per_level)
@@ -302,12 +305,12 @@ func _build_skill_card(role: String, skill_info: Dictionary) -> Control:
 		var upgrade_cost := GameManager.get_skill_upgrade_cost(role, skill_id)
 		power_button = Button.new()
 		# 버튼 표시는 'label' ("강화") 사용
-		power_button.text = "%s (%d G)" % [power_track_info.get("label", "강화"), upgrade_cost]
+		power_button.text = "%s\n (%d G)" % [power_track_info.get("label", "강화"), upgrade_cost]
 		power_button.disabled = GameManager.gold < upgrade_cost
 		power_button.pressed.connect(_on_skill_upgrade_pressed.bind(role, skill_id, "power"))
 	else:
 		power_button = Button.new()
-		power_button.text = "배우기 (%d C)" % skill_info["cost"]
+		power_button.text = "배우기\n(%d C)" % skill_info["cost"]
 		power_button.disabled = GameManager.crystal < int(skill_info["cost"])
 		power_button.pressed.connect(_on_learn_skill_pressed.bind(role, skill_id))
 

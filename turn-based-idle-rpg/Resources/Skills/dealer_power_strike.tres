@@ -9,4 +9,4 @@ skill_name = "강타"
 description = "기본 공격력의 2배 데미지를 입힌다."
 mp_cost = 10
 cooldown = 2
-power = 2.0
+power = 0.0

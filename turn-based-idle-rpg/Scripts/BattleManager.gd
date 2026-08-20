@@ -14,13 +14,13 @@ signal battle_lost
 signal action_performed(data: Dictionary)
 
 const ROUND_PAUSE := 0.1  # 라운드가 끝난 뒤 다음 라운드 시작까지 대기 시간(초)
-const BATTLE_START_DELAY := 0.5  # 전투 시작(등장 메시지) 후 첫 행동까지 대기 시간(초)
+const BATTLE_START_DELAY := 1  # 전투 시작(등장 메시지) 후 첫 행동까지 대기 시간(초)
 
 ## 행동 하나가 끝난 뒤 다음 행동으로 넘어가기 전 대기하는 시간(초).
 ## TODO(연출 단계): 이 자리를 "Main의 애니메이션 재생 완료 대기"로 교체할 예정.
 ## 지금은 순서가 하나씩 처리되는지 확인하기 위한 임시 지연이다.
 const ACTION_ANIMATION_PLACEHOLDER_DELAY := 0.3
-const ACTION_DELAY := 0.2
+const ACTION_DELAY := 0.5
 
 ## ---- 힐러 자동 치유 발동 조건 (나중에 밸런스 조정하기 쉽도록 상수로 분리) ----
 ## 아군의 "입은 피해(빠진 HP)"가 치유량의 이 비율 이상이면 치유를 사용한다.

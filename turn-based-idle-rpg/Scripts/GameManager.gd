@@ -96,11 +96,12 @@ var unlocked_characters: Dictionary = {
 ## 아직 안 만난 몬스터는 이 딕셔너리에 없으므로 MonsterPanel에서 "미발견"으로 표시된다.
 var discovered_enemies: Dictionary = {}
 
+#! balance
 ## 캐릭터 해금 비용 (크리스탈). 딜러는 이미 해금돼 있으므로 값 없음. (수치는 임시값)
 const UNLOCK_COST := {
-	"healer": 150,
-	"tanker": 250,
-	"buffer": 350,
+	"healer": 4,
+	"tanker": 5,
+	"buffer": 6,
 }
 
 ## 공용 업그레이드 레벨 (전투 후 회복 등, 전체 파티에 적용될 요소)
@@ -110,6 +111,7 @@ var common_upgrades: Dictionary = {
 	"dungeon_stat_reduction": 0,
 	"dungeon_reward_boost": 0,
 	"battle_speed": 0,
+	"streak_gold_bonus": 0,
 }
 
 ## 공용 업그레이드 정보: 레벨당 증가량 / 기본 가격 / 가격 증가율 / 표시 이름
@@ -117,6 +119,7 @@ var common_upgrades: Dictionary = {
 const COMMON_UPGRADE_INFO := {
 	"post_battle_heal_hp": {"per_level": 5, "unit": "%", "base_cost": 20, "cost_growth": 1.2, "label": "전투 후 HP 회복"},
 	"post_battle_heal_mp": {"per_level": 5, "unit": "%", "base_cost": 20, "cost_growth": 1.2, "label": "전투 후 MP 회복"},
+	"streak_gold_bonus": {"per_level": 1, "unit": "G/층", "base_cost": 496, "cost_step": 248, "label": "층수 보너스"},
 	"dungeon_stat_reduction": {"per_level": 1, "unit": "%", "base_cost": 30, "cost_growth": 1.25, "label": "던전 몬스터 강화율 감소"},
 	"dungeon_reward_boost": {"per_level": 1, "unit": "%", "base_cost": 30, "cost_growth": 1.25, "label": "던전 보상 배율 증가"},
 	"battle_speed": {"per_level": 10, "unit": "%", "base_cost": 40, "cost_growth": 1.3, "label": "게임 속도", "max_level": 10},
@@ -138,7 +141,7 @@ var character_skills: Dictionary = {
 	"tanker": {},
 	"buffer": {},
 }
-
+#! balance
 ## 역할별 배울 수 있는 스킬 정보. resource_path에서 SkillData를 로드하고, cost는 습득 비용(크리스탈).
 ## power_per_level/upgrade_base_cost/upgrade_cost_growth는 습득 이후 데미지 배율 업그레이드에 쓰임.
 ## 새 스킬을 추가할 땐 여기에 한 줄만 추가하면 됨.
@@ -147,10 +150,10 @@ const CHARACTER_SKILL_INFO := {
 		{
 			"skill_id": "power_strike",
 			"resource_path": "res://Resources/Skills/dealer_power_strike.tres",
-			"cost": 100,
+			"cost": 2,
 			"power_per_level": 0.1,
 			"upgrade_base_cost": 60,
-			"upgrade_cost_growth": 1.2,
+			"upgrade_cost_growth": 1.3,
 		},
 	],
 		
@@ -158,7 +161,7 @@ const CHARACTER_SKILL_INFO := {
 		{
 			"skill_id": "heal",
 			"resource_path": "res://Resources/Skills/healer_heal.tres",
-			"cost": 100,
+			"cost": 2,
 			"power_per_level": 0.1,
 			"upgrade_base_cost": 60,
 			"upgrade_cost_growth": 1.2,
@@ -166,9 +169,9 @@ const CHARACTER_SKILL_INFO := {
 			"extra_upgrades": [
 				{
 					"track_id": "hp_percent",
-					"per_level": 0.05,
+					"per_level": 0.02,
 					"base_cost": 80,
-					"cost_growth": 1.25,
+					"cost_growth": 1.4,
 					"label": "강화",
 					"name": "최대 HP 비례 회복",
 				},
@@ -180,8 +183,8 @@ const CHARACTER_SKILL_INFO := {
 		{
 			"skill_id": "taunt",
 			"resource_path": "res://Resources/Skills/tanker_taunt.tres",
-			"cost": 100,
-			"power_per_level": 0.3,
+			"cost": 2,
+			"power_per_level": 0.2,
 			"upgrade_base_cost": 60,
 			"upgrade_cost_growth": 1.2,
 		},
@@ -190,7 +193,7 @@ const CHARACTER_SKILL_INFO := {
 		{
 			"skill_id": "atk_buff",
 			"resource_path": "res://Resources/Skills/buffer_atk_buff.tres",
-			"cost": 100,
+			"cost": 2,
 			"power_per_level": 0.03,
 			"upgrade_base_cost": 60,
 			"upgrade_cost_growth": 1.2,
@@ -198,36 +201,36 @@ const CHARACTER_SKILL_INFO := {
 	],
 }
 
-## 역할별 스탯 업그레이드 정보 (수치는 임시값이라 나중에 밸런스에 맞춰 조정하면 됨).
-## 딜러 외 역할은 아직 스킬/행동 로직이 없어서 수치만 다르게 잡아둔 상태.
+#! balance
+## 역할별 스탯 업그레이드 정보
 const CHARACTER_UPGRADE_INFO := {
 	"dealer": {
-		"hp": {"per_level": 10, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "HP"},
-		"mp": {"per_level": 5, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "MP"},
-		"atk": {"per_level": 2, "unit": "", "base_cost": 25, "cost_growth": 1.18, "label": "ATK"},
-		"def": {"per_level": 2, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "DEF"},
-		"spd": {"per_level": 1, "unit": "", "base_cost": 30, "cost_growth": 1.2, "label": "SPD"},
+		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
+		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
+		"atk": {"per_level": 2, "unit": "", "base_cost": 100, "cost_step": 50, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"healer": {
-		"hp": {"per_level": 8, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "HP"},
-		"mp": {"per_level": 8, "unit": "", "base_cost": 20, "cost_growth": 1.16, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "ATK"},
-		"def": {"per_level": 2, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "DEF"},
-		"spd": {"per_level": 1, "unit": "", "base_cost": 30, "cost_growth": 1.2, "label": "SPD"},
+		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
+		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"tanker": {
-		"hp": {"per_level": 15, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "HP"},
-		"mp": {"per_level": 3, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "ATK"},
-		"def": {"per_level": 3, "unit": "", "base_cost": 25, "cost_growth": 1.18, "label": "DEF"},
-		"spd": {"per_level": 1, "unit": "", "base_cost": 30, "cost_growth": 1.2, "label": "SPD"},
+		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
+		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "DEF"},
+		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"buffer": {
-		"hp": {"per_level": 10, "unit": "", "base_cost": 15, "cost_growth": 1.15, "label": "HP"},
-		"mp": {"per_level": 6, "unit": "", "base_cost": 18, "cost_growth": 1.16, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "ATK"},
-		"def": {"per_level": 2, "unit": "", "base_cost": 20, "cost_growth": 1.18, "label": "DEF"},
-		"spd": {"per_level": 1, "unit": "", "base_cost": 30, "cost_growth": 1.2, "label": "SPD"},
+		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
+		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"spd": {"per_level": 1, "unit": "", "base_cost": 16, "cost_step": 8, "label": "SPD"},
 	},
 }
 
@@ -263,8 +266,15 @@ func _get_upgrade_cost(base_cost: int, growth: float, level: int) -> int:
 	return int(round(base_cost * pow(growth, level)))
 
 
+## 레벨에 따른 업그레이드 가격 (선형 증가) - 지수 증가 대신 균일하게 늘어나는 업그레이드용.
+func _get_linear_upgrade_cost(base_cost: int, cost_step: int, level: int) -> int:
+	return base_cost + (level * cost_step)
+
+
 func get_common_upgrade_cost(key: String) -> int:
 	var info: Dictionary = COMMON_UPGRADE_INFO[key]
+	if key == "streak_gold_bonus":
+		return _get_linear_upgrade_cost(info["base_cost"], info["cost_step"], common_upgrades[key])
 	return _get_upgrade_cost(info["base_cost"], info["cost_growth"], common_upgrades[key])
 
 
@@ -337,6 +347,19 @@ func get_dungeon_reward_multiplier_step_at(level: int) -> float:
 ## 업그레이드 반영된 게임(전투) 진행 배속. 레벨당 10%씩 빨라짐 (기본 1.0배).
 func get_battle_speed_multiplier() -> float:
 	return get_battle_speed_multiplier_at(common_upgrades["battle_speed"])
+
+
+## 층수 보너스 골드. 이름은 "층수 보너스"지만 실제로는 승리한 층수(current_floor)를 그대로 사용한다
+## (던전을 나가거나 클리어하면 current_floor가 1로 초기화되므로 연승 수와 사실상 동일한 값이 된다).
+## 레벨당 층당 5G씩 늘어남 (예: 5F 승리 시 레벨1=5G, 레벨2=10G, 레벨3=15G 추가).
+func get_streak_gold_bonus(floor: int) -> int:
+	return get_streak_gold_bonus_at(floor, common_upgrades["streak_gold_bonus"])
+
+
+## 층수 보너스 골드 (레벨 지정 버전). UI에서 "다음 레벨" 미리보기용.
+func get_streak_gold_bonus_at(floor: int, level: int) -> int:
+	var per_floor: int = level * int(COMMON_UPGRADE_INFO["streak_gold_bonus"]["per_level"])
+	return floor * per_floor
 
 
 ## 업그레이드 반영된 게임 배속 (레벨 지정 버전). UI에서 "다음 레벨" 미리보기용.
@@ -422,7 +445,10 @@ func unlock_character(role: String) -> bool:
 
 func get_character_upgrade_cost(role: String, key: String) -> int:
 	var info: Dictionary = CHARACTER_UPGRADE_INFO[role][key]
-	return _get_upgrade_cost(info["base_cost"], info["cost_growth"], character_upgrades[role][key])
+	var level: int = character_upgrades[role][key]
+	if key == "mp":
+		return _get_upgrade_cost(info["base_cost"], info["cost_growth"], level)
+	return _get_linear_upgrade_cost(info["base_cost"], info["cost_step"], level)
 
 
 ## 역할별 스탯 업그레이드 구매. 성공 시 character_stat_upgraded 신호로 즉시 반영할 증가량을 알려준다.

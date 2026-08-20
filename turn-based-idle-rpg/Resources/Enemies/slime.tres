@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_data")
 enemy_name = "Slime"
-max_hp = 30
-atk = 5
-def = 2
+max_hp = 50
+def = 5
 spd = 5
+gold_reward = 20

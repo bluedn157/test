@@ -6,6 +6,6 @@
 script = ExtResource("1_data")
 character_name = "Dealer"
 character_role = "dealer"
-atk = 20
-def = 5
+atk = 25
+def = 0
 spd = 15
