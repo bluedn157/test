@@ -14,6 +14,7 @@ signal enemy_discovered(enemy_path: String)
 signal battle_speed_changed
 
 const SAVE_PATH := "user://save_data.cfg"
+const AUTO_SAVE_INTERVAL := 1.0
 
 ## 던전 강화 배수의 "기준값". 업그레이드로 이 값 자체가 조정됨.
 const STAT_MULTIPLIER_STEP_BASE := 2.0
@@ -57,6 +58,8 @@ var battle_speed_current: float = 1.0
 ## 맞춰지고, 설정 화면에서 직접 조절할 수 없다. false면 업그레이드를 사도 현재 속도는 그대로 유지되고,
 ## 설정 화면 슬라이더로 1배~최댓값 사이에서 직접 조절할 수 있다.
 var battle_speed_auto_max: bool = true
+
+var _auto_save_timer: Timer
 
 var current_dungeon: int = 1
 var current_floor: int = 1
@@ -233,16 +236,25 @@ func _ready() -> void:
 	#DirAccess.remove_absolute(SAVE_PATH)
 	load_game()
 
+	# 재화가 빠르게 변하는 Idle 게임이므로 재화 변경 함수에서 매번 저장하지 않는다.
+	# 실제 시간 기준 1초마다 전체 세이브를 수행해 강제 종료 시 손실을 최소화한다.
+	_auto_save_timer = Timer.new()
+	_auto_save_timer.wait_time = AUTO_SAVE_INTERVAL
+	_auto_save_timer.one_shot = false
+	_auto_save_timer.ignore_time_scale = true
+	_auto_save_timer.process_mode = Node.PROCESS_MODE_ALWAYS
+	_auto_save_timer.timeout.connect(save_game)
+	add_child(_auto_save_timer)
+	_auto_save_timer.start()
+
 
 func add_gold(amount: int) -> void:
 	gold += amount
 	gold_changed.emit()
-	save_game()
 
 
 func add_crystal(amount: int) -> void:
 	crystal += amount
-	save_game()
 
 
 ## 레벨에 따른 업그레이드 가격 (지수적으로 증가).
@@ -660,8 +672,7 @@ func get_all_enemy_paths() -> Array[String]:
 
 
 ## ---------------- 저장 / 불러오기 / 초기화 ----------------
-## 메뉴로 따로 뺄 필요 없이, 상태가 바뀔 때마다(골드 변화, 업그레이드 구매,
-## 해금, 던전 진행 등) 자동으로 저장된다.
+## 중요한 영구 상태 변경 직후에는 호출할 수 있고, 일반적인 재화 변화는 1초 주기 자동 저장으로 처리한다.
 
 func save_game() -> void:
 	var config := ConfigFile.new()

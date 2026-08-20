@@ -90,12 +90,34 @@ func _run_battle_loop(run_id: int) -> void:
 ## 몬스터는 살아있는 파티원 중 무작위 한 명을 공격.
 ## (역할별 스킬/AI는 아직 없음. 딜러 외 역할도 지금은 기본 공격만 수행)
 func _process_round(run_id: int) -> void:
+	var combatants := _prepare_round_combatants()
+
+	for combatant in combatants:
+		if not battle_active or run_id != _battle_run_id:
+			return
+
+		if combatant.hp <= 0:
+			continue
+
+		if combatant in party:
+			if await _process_party_action(combatant):
+				return
+		else:
+			if await _process_enemy_action(combatant):
+				return
+
+
+## 한 라운드에서 실제로 행동할 살아있는 캐릭터들을 준비한다.
+## 파티원의 스킬 쿨다운과 모든 전투원의 상태 효과를 먼저 틱한 뒤 SPD 순으로 정렬한다.
+func _prepare_round_combatants() -> Array[Character]:
 	var combatants: Array[Character] = []
+
 	for m in party:
 		if m.hp > 0:
 			_tick_skill_cooldowns(m)
 			m.tick_effects()
 			combatants.append(m)
+
 	# 상태 효과 시스템은 범용이라 이후 몬스터에게도 상태이상을 걸 수 있으므로 몬스터도 함께 틱한다.
 	for e in enemies:
 		if e.hp > 0:
@@ -103,54 +125,65 @@ func _process_round(run_id: int) -> void:
 			combatants.append(e)
 
 	combatants.sort_custom(func(a, b): return a.spd > b.spd)
+	return combatants
 
-	for combatant in combatants:
-		if not battle_active or run_id != _battle_run_id:
-			return
 
-		if combatant in party:
-			if combatant.hp <= 0:
-				continue
-			var ready_skill := _get_ready_skill(combatant)
-			if ready_skill and ready_skill.skill_type == "heal":
-				var heal_target := _find_heal_target(combatant, ready_skill)
-				if heal_target:
-					await _execute_heal(combatant, ready_skill, heal_target)
-				else:
-					var fallback_target := _get_first_alive_enemy()
-					if fallback_target:
-						await _execute_attack(combatant, fallback_target)
-						if fallback_target.hp <= 0 and _all_enemies_dead():
-							_end_battle_won()
-							return
-			elif ready_skill and ready_skill.skill_type == "taunt":
-				await _execute_taunt(combatant, ready_skill)
-			elif ready_skill and ready_skill.skill_type == "buff":
-				var buff_target := _find_buff_target(combatant, ready_skill)
-				if buff_target:
-					await _execute_buff(combatant, ready_skill, buff_target)
-			else:
-				var target := _get_first_alive_enemy()
-				if target == null:
-					continue
-				if ready_skill:
-					await _execute_skill(combatant, ready_skill, target)
-				else:
-					await _execute_attack(combatant, target)
-				if target.hp <= 0 and _all_enemies_dead():
-					_end_battle_won()
-					return
+## 파티원의 행동을 결정하고 실행한다.
+## 반환값 true = 전투가 끝났으므로 현재 라운드를 즉시 종료해야 함.
+func _process_party_action(character: Character) -> bool:
+	var ready_skill := _get_ready_skill(character)
+
+	if ready_skill and ready_skill.skill_type == "heal":
+		var heal_target := _find_heal_target(character, ready_skill)
+		if heal_target:
+			await _execute_heal(character, ready_skill, heal_target)
 		else:
-			if combatant.hp <= 0:
-				continue
-			var target := _get_random_alive_party_member()
-			if target == null:
-				_end_battle_lost()
-				return
-			await _execute_attack(combatant, target)
-			if _all_party_dead():
-				_end_battle_lost()
-				return
+			await _process_party_basic_or_skill_attack(character, ready_skill)
+	elif ready_skill and ready_skill.skill_type == "taunt":
+		await _execute_taunt(character, ready_skill)
+	elif ready_skill and ready_skill.skill_type == "buff":
+		var buff_target := _find_buff_target(character, ready_skill)
+		if buff_target:
+			await _execute_buff(character, ready_skill, buff_target)
+		else:
+			await _process_party_basic_or_skill_attack(character, null)
+	else:
+		await _process_party_basic_or_skill_attack(character, ready_skill)
+
+	if _all_enemies_dead():
+		_end_battle_won()
+		return true
+
+	return false
+
+
+## 파티원의 일반 공격 또는 공격 스킬을 실행한다.
+func _process_party_basic_or_skill_attack(character: Character, ready_skill: SkillData) -> void:
+	var target := _get_first_alive_enemy()
+	if target == null:
+		return
+
+	if ready_skill:
+		await _execute_skill(character, ready_skill, target)
+	else:
+		await _execute_attack(character, target)
+
+
+## 몬스터의 행동을 실행한다.
+## 반환값 true = 전투가 끝났으므로 현재 라운드를 즉시 종료해야 함.
+func _process_enemy_action(enemy: Enemy) -> bool:
+	var target := _get_random_alive_party_member()
+	if target == null:
+		_end_battle_lost()
+		return true
+
+	await _execute_attack(enemy, target)
+
+	if _all_party_dead():
+		_end_battle_lost()
+		return true
+
+	return false
 
 
 ## 행동 하나를 emit하고, 다음 행동으로 넘어가기 전 텀을 준다.
