@@ -16,6 +16,7 @@ var current_tab: int = 0
 func _ready() -> void:
 	_build_ui()
 	GameManager.gold_changed.connect(_on_gold_changed)
+	GameManager.crystal_changed.connect(_on_crystal_changed)
 	_show_tab(0)
 
 
@@ -69,6 +70,9 @@ func _show_tab(index: int) -> void:
 func _on_gold_changed() -> void:
 	_render_tab()
 
+func _on_crystal_changed() -> void:
+	_render_tab()
+
 
 func _render_tab() -> void:
 	for child in content_list.get_children():
@@ -83,6 +87,12 @@ func _render_tab() -> void:
 		_render_character_tab(role)
 	else:
 		_render_locked_tab(role)
+
+
+func _get_common_upgrade_currency(upgrade_id: String) -> String:
+	if upgrade_id in ["dungeon_stat_reduction", "dungeon_reward_boost", "battle_speed"]:
+		return "C"
+	return "G"
 
 
 ## ---------------- 공용 탭 ----------------
@@ -119,7 +129,7 @@ func _render_common_tab() -> void:
 		if maxed:
 			next_text = current_text
 
-		_add_upgrade_row_to_grid(grid, info["label"], level, cost, current_text, next_text, _on_common_upgrade_pressed.bind(key), maxed)
+		_add_upgrade_row_to_grid(grid, info["label"], level, cost, current_text, next_text, _on_common_upgrade_pressed.bind(key), maxed, _get_common_upgrade_currency(key))
 
 
 func _on_common_upgrade_pressed(key: String) -> void:
@@ -148,8 +158,8 @@ func _render_locked_tab(role: String) -> void:
 	box.add_child(label)
 
 	var unlock_button := Button.new()
-	unlock_button.text = "%s 해금 (%d G)" % [role_name, cost]
-	unlock_button.disabled = GameManager.gold < cost
+	unlock_button.text = "%s 해금 (%d C)" % [role_name, cost]
+	unlock_button.disabled = GameManager.crystal < cost
 	unlock_button.pressed.connect(_on_unlock_pressed.bind(role))
 	box.add_child(unlock_button)
 
@@ -297,8 +307,8 @@ func _build_skill_card(role: String, skill_info: Dictionary) -> Control:
 		power_button.pressed.connect(_on_skill_upgrade_pressed.bind(role, skill_id, "power"))
 	else:
 		power_button = Button.new()
-		power_button.text = "배우기 (%d G)" % skill_info["cost"]
-		power_button.disabled = GameManager.gold < int(skill_info["cost"])
+		power_button.text = "배우기 (%d C)" % skill_info["cost"]
+		power_button.disabled = GameManager.crystal < int(skill_info["cost"])
 		power_button.pressed.connect(_on_learn_skill_pressed.bind(role, skill_id))
 
 	var track_rows: Array[Dictionary] = [{"info_text": power_info_text, "button": power_button}]
@@ -421,7 +431,7 @@ func _build_skill_card(role: String, skill_info: Dictionary) -> Control:
 
 
 ## 스탯 업그레이드 한 줄 추가
-func _add_upgrade_row_to_grid(grid: GridContainer, label_text: String, level: int, cost: int, current_text: String, next_text: String, callable: Callable, maxed: bool = false) -> void:
+func _add_upgrade_row_to_grid(grid: GridContainer, label_text: String, level: int, cost: int, current_text: String, next_text: String, callable: Callable, maxed: bool = false, currency: String = "G") -> void:
 	var name_cell := UITheme.create_cell_panel(UITheme.ROW_BG_COLOR, CELL_PADDING)
 	var name_label := Label.new()
 	name_label.text = "%s (Lv.%d)" % [label_text, level]
@@ -458,8 +468,8 @@ func _add_upgrade_row_to_grid(grid: GridContainer, label_text: String, level: in
 		buy_button.text = "MAX"
 		buy_button.disabled = true
 	else:
-		buy_button.text = "%d G" % cost
-		buy_button.disabled = GameManager.gold < cost
+		buy_button.text = "%d %s" % [cost, currency]
+		buy_button.disabled = (GameManager.crystal < cost) if currency == "C" else (GameManager.gold < cost)
 	buy_button.pressed.connect(callable)
 	buy_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	btn_cell.add_child(buy_button)

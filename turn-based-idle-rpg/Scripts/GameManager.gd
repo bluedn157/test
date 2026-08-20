@@ -1,6 +1,7 @@
 extends Node
 
 signal gold_changed
+signal crystal_changed
 signal character_stat_upgraded(role: String, key: String, amount: int)
 signal character_skill_learned(role: String, skill_id: String)
 signal character_unlocked(role: String)
@@ -95,7 +96,7 @@ var unlocked_characters: Dictionary = {
 ## 아직 안 만난 몬스터는 이 딕셔너리에 없으므로 MonsterPanel에서 "미발견"으로 표시된다.
 var discovered_enemies: Dictionary = {}
 
-## 캐릭터 해금 비용 (골드). 딜러는 이미 해금돼 있으므로 값 없음. (수치는 임시값)
+## 캐릭터 해금 비용 (크리스탈). 딜러는 이미 해금돼 있으므로 값 없음. (수치는 임시값)
 const UNLOCK_COST := {
 	"healer": 150,
 	"tanker": 250,
@@ -138,7 +139,7 @@ var character_skills: Dictionary = {
 	"buffer": {},
 }
 
-## 역할별 배울 수 있는 스킬 정보. resource_path에서 SkillData를 로드하고, cost는 습득 비용(골드).
+## 역할별 배울 수 있는 스킬 정보. resource_path에서 SkillData를 로드하고, cost는 습득 비용(크리스탈).
 ## power_per_level/upgrade_base_cost/upgrade_cost_growth는 습득 이후 데미지 배율 업그레이드에 쓰임.
 ## 새 스킬을 추가할 땐 여기에 한 줄만 추가하면 됨.
 const CHARACTER_SKILL_INFO := {
@@ -280,9 +281,17 @@ func purchase_common_upgrade(key: String) -> bool:
 	if is_common_upgrade_maxed(key):
 		return false
 	var cost := get_common_upgrade_cost(key)
-	if gold < cost:
-		return false
-	gold -= cost
+	var uses_crystal := key in ["dungeon_stat_reduction", "dungeon_reward_boost", "battle_speed"]
+	if uses_crystal:
+		if crystal < cost:
+			return false
+		crystal -= cost
+		crystal_changed.emit()
+	else:
+		if gold < cost:
+			return false
+		gold -= cost
+		gold_changed.emit()
 	common_upgrades[key] += 1
 	if key == "battle_speed":
 		if battle_speed_auto_max:
@@ -290,7 +299,6 @@ func purchase_common_upgrade(key: String) -> bool:
 			battle_speed_current = get_battle_speed_multiplier()
 		_apply_battle_speed()
 		battle_speed_changed.emit()
-	gold_changed.emit()
 	save_game()
 	return true
 
@@ -400,11 +408,11 @@ func unlock_character(role: String) -> bool:
 	if is_character_unlocked(role):
 		return false
 	var cost := get_unlock_cost(role)
-	if gold < cost:
+	if crystal < cost:
 		return false
-	gold -= cost
+	crystal -= cost
 	unlocked_characters[role] = true
-	gold_changed.emit()
+	crystal_changed.emit()
 	character_unlocked.emit(role)
 	save_game()
 	return true
@@ -523,11 +531,11 @@ func learn_character_skill(role: String, skill_id: String) -> bool:
 	if is_skill_learned(role, skill_id):
 		return false
 	var cost := get_character_skill_cost(role, skill_id)
-	if gold < cost:
+	if crystal < cost:
 		return false
-	gold -= cost
+	crystal -= cost
 	character_skills[role][skill_id] = {"learned": true, "level": {"power": 0}}
-	gold_changed.emit()
+	crystal_changed.emit()
 	character_skill_learned.emit(role, skill_id)
 	save_game()
 	return true
