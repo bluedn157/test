@@ -1,0 +1,7 @@
+res://main.tscn
+res://Scripts/GameManager.gd
+res://Scripts/Main.gd
+res://Scripts/UpgradePanel.gd
+res://Resources/Skills/dealer_power_strike.tres
+res://Resources/Skills/healer_heal.tres
+res://Resources/Enemies/goblin_king_boss.tres

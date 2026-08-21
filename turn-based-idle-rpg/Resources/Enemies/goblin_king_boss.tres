@@ -5,8 +5,9 @@
 [resource]
 script = ExtResource("1_data")
 enemy_name = "Goblin King"
-max_hp = 500
+max_hp = 300
 atk = 25
+def = 8
 spd = 8
 gold_reward = 500
 crystal_reward = 1

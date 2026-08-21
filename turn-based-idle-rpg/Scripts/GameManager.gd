@@ -97,11 +97,11 @@ var unlocked_characters: Dictionary = {
 var discovered_enemies: Dictionary = {}
 
 #! balance
-## 캐릭터 해금 비용 (크리스탈). 딜러는 이미 해금돼 있으므로 값 없음. (수치는 임시값)
+## 캐릭터 해금 비용 (크리스탈)
 const UNLOCK_COST := {
-	"healer": 4,
-	"tanker": 5,
-	"buffer": 6,
+	"healer": 3,
+	"tanker": 4,
+	"buffer": 5,
 }
 
 ## 공용 업그레이드 레벨 (전투 후 회복 등, 전체 파티에 적용될 요소)
@@ -114,15 +114,16 @@ var common_upgrades: Dictionary = {
 	"streak_gold_bonus": 0,
 }
 
+#! balance
 ## 공용 업그레이드 정보: 레벨당 증가량 / 기본 가격 / 가격 증가율 / 표시 이름
-## (수치는 임시값이라 나중에 밸런스에 맞춰 조정하면 됨)
+## 가격의 단위를 고치고 싶으면 var uses_crystal 를 참고할 것
 const COMMON_UPGRADE_INFO := {
-	"post_battle_heal_hp": {"per_level": 5, "unit": "%", "base_cost": 20, "cost_growth": 1.2, "label": "전투 후 HP 회복"},
-	"post_battle_heal_mp": {"per_level": 5, "unit": "%", "base_cost": 20, "cost_growth": 1.2, "label": "전투 후 MP 회복"},
-	"streak_gold_bonus": {"per_level": 1, "unit": "G/층", "base_cost": 496, "cost_step": 248, "label": "층수 보너스"},
+	"post_battle_heal_hp": {"per_level": 1, "unit": "%", "base_cost": 20, "cost_growth": 1.15, "label": "전투 후 HP 회복"},
+	"post_battle_heal_mp": {"per_level": 1, "unit": "%", "base_cost": 15, "cost_growth": 1.15, "label": "전투 후 MP 회복"},
+	"streak_gold_bonus": {"per_level": 1, "unit": "G/층", "base_cost": 124, "cost_step": 248, "label": "층수 보너스"},
 	"dungeon_stat_reduction": {"per_level": 1, "unit": "%", "base_cost": 30, "cost_growth": 1.25, "label": "던전 몬스터 강화율 감소"},
 	"dungeon_reward_boost": {"per_level": 1, "unit": "%", "base_cost": 30, "cost_growth": 1.25, "label": "던전 보상 배율 증가"},
-	"battle_speed": {"per_level": 10, "unit": "%", "base_cost": 40, "cost_growth": 1.3, "label": "게임 속도", "max_level": 10},
+	"battle_speed": {"per_level": 10, "unit": "%", "base_cost": 40, "cost_growth": 1.3, "label": "게임 속도", "max_level": 160},
 }
 
 ## 역할별 스탯 업그레이드 레벨: {role: {key: level}}
@@ -142,18 +143,16 @@ var character_skills: Dictionary = {
 	"buffer": {},
 }
 #! balance
-## 역할별 배울 수 있는 스킬 정보. resource_path에서 SkillData를 로드하고, cost는 습득 비용(크리스탈).
-## power_per_level/upgrade_base_cost/upgrade_cost_growth는 습득 이후 데미지 배율 업그레이드에 쓰임.
-## 새 스킬을 추가할 땐 여기에 한 줄만 추가하면 됨.
+## 캐릭터 스킬 정보. resource_path에서 SkillData를 로드
 const CHARACTER_SKILL_INFO := {
 	"dealer": [
 		{
 			"skill_id": "power_strike",
 			"resource_path": "res://Resources/Skills/dealer_power_strike.tres",
-			"cost": 2,
+			"cost": 300,
 			"power_per_level": 0.1,
-			"upgrade_base_cost": 60,
-			"upgrade_cost_growth": 1.3,
+			"upgrade_base_cost": 100,
+			"upgrade_cost_growth": 1.2,
 		},
 	],
 		
@@ -161,9 +160,9 @@ const CHARACTER_SKILL_INFO := {
 		{
 			"skill_id": "heal",
 			"resource_path": "res://Resources/Skills/healer_heal.tres",
-			"cost": 2,
+			"cost": 500,
 			"power_per_level": 0.1,
-			"upgrade_base_cost": 60,
+			"upgrade_base_cost": 100,
 			"upgrade_cost_growth": 1.2,
 			"power_name": "힐량", # 기본 강화 트랙 이름 추가
 			"extra_upgrades": [
@@ -207,29 +206,29 @@ const CHARACTER_UPGRADE_INFO := {
 	"dealer": {
 		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
 		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
-		"atk": {"per_level": 2, "unit": "", "base_cost": 100, "cost_step": 50, "label": "ATK"},
-		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"atk": {"per_level": 2, "unit": "", "base_cost": 80, "cost_step": 40, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 60, "cost_step": 30, "label": "DEF"},
 		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"healer": {
 		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
 		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
-		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 32, "cost_step": 16, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 60, "cost_step": 30, "label": "DEF"},
 		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"tanker": {
 		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
 		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
-		"def": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "DEF"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 32, "cost_step": 16, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
 		"spd": {"per_level": 1, "unit": "", "base_cost": 20, "cost_step": 10, "label": "SPD"},
 	},
 	"buffer": {
 		"hp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_step": 15, "label": "HP"},
 		"mp": {"per_level": 5, "unit": "", "base_cost": 30, "cost_growth": 1.4, "label": "MP"},
-		"atk": {"per_level": 1, "unit": "", "base_cost": 40, "cost_step": 20, "label": "ATK"},
-		"def": {"per_level": 1, "unit": "", "base_cost": 50, "cost_step": 25, "label": "DEF"},
+		"atk": {"per_level": 1, "unit": "", "base_cost": 32, "cost_step": 16, "label": "ATK"},
+		"def": {"per_level": 1, "unit": "", "base_cost": 60, "cost_step": 30, "label": "DEF"},
 		"spd": {"per_level": 1, "unit": "", "base_cost": 16, "cost_step": 8, "label": "SPD"},
 	},
 }
@@ -557,11 +556,11 @@ func learn_character_skill(role: String, skill_id: String) -> bool:
 	if is_skill_learned(role, skill_id):
 		return false
 	var cost := get_character_skill_cost(role, skill_id)
-	if crystal < cost:
+	if gold < cost:
 		return false
-	crystal -= cost
+	gold -= cost
 	character_skills[role][skill_id] = {"learned": true, "level": {"power": 0}}
-	crystal_changed.emit()
+	gold_changed.emit()
 	character_skill_learned.emit(role, skill_id)
 	save_game()
 	return true
@@ -783,6 +782,7 @@ func reset_data() -> void:
 		"dungeon_stat_reduction": 0,
 		"dungeon_reward_boost": 0,
 		"battle_speed": 0,
+		"streak_gold_bonus": 0,
 	}
 	_apply_battle_speed()
 	character_upgrades = {
@@ -801,4 +801,5 @@ func reset_data() -> void:
 
 	data_reset.emit()
 	gold_changed.emit()
+	crystal_changed.emit()
 	battle_speed_changed.emit()

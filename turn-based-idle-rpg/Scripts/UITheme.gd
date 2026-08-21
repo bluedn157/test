@@ -36,6 +36,14 @@ const HP_BAR_COLOR := Color("#f38ba8")
 const MP_BAR_COLOR := Color("#89b4fa")
 const BAR_TRACK_COLOR := LOCKED_ROW_BG_COLOR
 
+# ---- 재화(골드/크리스탈) 공용 색상 ----
+# 업그레이드 패널의 "G"/"C" 비용 표시, 상단 골드/크리스탈 라벨, 재화 아이콘까지
+# 전부 이 두 값만 참조해서 한 곳만 고치면 게임 전체에 일관되게 반영되게 한다.
+const GOLD_COLOR := ACCENT_COLOR    # 골드 = 노랑
+const CRYSTAL_COLOR := MP_BAR_COLOR # 크리스탈 = 파랑 (MP 바와 같은 계열)
+# 던전 이름은 골드(노랑)와 겹치지 않는 별도의 강조색을 쓴다.
+const DUNGEON_NAME_COLOR := Color("#cba6f7")
+
 # ---- 초상화 프레임(전투 유닛, 몬스터 도감 공용) ----
 const PORTRAIT_BG_COLOR := HEADER_BG_COLOR
 const PORTRAIT_BORDER_COLOR := CARD_BORDER_COLOR
@@ -67,6 +75,37 @@ static func create_cell_panel(bg: Color, padding: int = 8) -> PanelContainer:
 	cell.mouse_filter = Control.MOUSE_FILTER_PASS
 	cell.add_theme_stylebox_override("panel", create_cell_style(bg, BORDER_COLOR, 1, padding))
 	return cell
+
+
+## 골드/크리스탈처럼 텍스트 앞에 붙는 작은 원형 재화 아이콘. 실제 아이콘 이미지가 없는
+## 동안 쓰는 자리표시자라 텍스처 대신 완전히 둥근 모서리의 StyleBoxFlat 패널로 만든다.
+## 나중에 진짜 아이콘이 생기면 이 함수 안만 텍스처로 바꾸면 전체에 반영된다.
+##
+## 행 높이 정중앙에 그냥 SHRINK_CENTER로 맞추면, 텍스트는 폰트 하강폭(descender) 때문에
+## 시각적 무게중심이 실제 박스 중앙보다 아래에 있어서 원이 글자보다 위로 붙어 보인다.
+## 그래서 원을 감싸는 MarginContainer에 위쪽 여백만 줘서 살짝 아래로 밀어 눈에 맞춰준다
+## (위/아래 마진 차이의 절반만큼 실제로 이동한다).
+#!
+const CURRENCY_ICON_VERTICAL_NUDGE := 1
+
+static func create_currency_icon(color: Color, diameter: float = 14.0) -> Control:
+	var dot := PanelContainer.new()
+	dot.custom_minimum_size = Vector2(diameter, diameter)
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.set_corner_radius_all(int(diameter / 2.0))
+	dot.add_theme_stylebox_override("panel", style)
+
+	var wrapper := MarginContainer.new()
+	wrapper.add_theme_constant_override("margin_top", int(CURRENCY_ICON_VERTICAL_NUDGE * 2.0))
+	wrapper.add_theme_constant_override("margin_bottom", 0)
+	wrapper.add_theme_constant_override("margin_left", 0)
+	wrapper.add_theme_constant_override("margin_right", 0)
+	wrapper.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wrapper.add_child(dot)
+	return wrapper
 
 
 ## 카드(스킬 카드, 몬스터 카드 등)용 StyleBoxFlat 기본형. content_margin은 호출부에서

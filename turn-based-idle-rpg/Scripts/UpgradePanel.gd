@@ -163,6 +163,7 @@ func _render_locked_tab(role: String) -> void:
 	var unlock_button := Button.new()
 	unlock_button.text = "%s 해금 (%d C)" % [role_name, cost]
 	unlock_button.disabled = GameManager.crystal < cost
+	unlock_button.add_theme_color_override("font_color", UITheme.CRYSTAL_COLOR)
 	unlock_button.pressed.connect(_on_unlock_pressed.bind(role))
 	box.add_child(unlock_button)
 
@@ -307,11 +308,13 @@ func _build_skill_card(role: String, skill_info: Dictionary) -> Control:
 		# 버튼 표시는 'label' ("강화") 사용
 		power_button.text = "%s\n (%d G)" % [power_track_info.get("label", "강화"), upgrade_cost]
 		power_button.disabled = GameManager.gold < upgrade_cost
+		power_button.add_theme_color_override("font_color", UITheme.GOLD_COLOR)
 		power_button.pressed.connect(_on_skill_upgrade_pressed.bind(role, skill_id, "power"))
 	else:
 		power_button = Button.new()
-		power_button.text = "배우기\n(%d C)" % skill_info["cost"]
-		power_button.disabled = GameManager.crystal < int(skill_info["cost"])
+		power_button.text = "배우기\n(%d G)" % skill_info["cost"]
+		power_button.disabled = GameManager.gold < int(skill_info["cost"])
+		power_button.add_theme_color_override("font_color", UITheme.GOLD_COLOR)
 		power_button.pressed.connect(_on_learn_skill_pressed.bind(role, skill_id))
 
 	var track_rows: Array[Dictionary] = [{"info_text": power_info_text, "button": power_button}]
@@ -336,6 +339,7 @@ func _build_skill_card(role: String, skill_info: Dictionary) -> Control:
 			# 버튼 표시는 'label' ("강화") 사용
 			track_button.text = "%s (%d G)" % [track_info.get("label", "강화"), track_cost]
 			track_button.disabled = GameManager.gold < track_cost
+			track_button.add_theme_color_override("font_color", UITheme.GOLD_COLOR)
 			track_button.pressed.connect(_on_skill_upgrade_pressed.bind(role, skill_id, track_id))
 
 			track_rows.append({"info_text": track_text, "button": track_button})
@@ -473,6 +477,7 @@ func _add_upgrade_row_to_grid(grid: GridContainer, label_text: String, level: in
 	else:
 		buy_button.text = "%d %s" % [cost, currency]
 		buy_button.disabled = (GameManager.crystal < cost) if currency == "C" else (GameManager.gold < cost)
+		buy_button.add_theme_color_override("font_color", UITheme.CRYSTAL_COLOR if currency == "C" else UITheme.GOLD_COLOR)
 	buy_button.pressed.connect(callable)
 	buy_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	btn_cell.add_child(buy_button)

@@ -180,6 +180,8 @@ func _build_monster_card(enemy_path: String) -> Control:
 	var stat_mult := GameManager.get_dungeon_enemy_stat_multiplier(dungeon)
 	var reward_mult := GameManager.get_dungeon_enemy_reward_multiplier(dungeon)
 	var color_hex := UITheme.NEXT_STAT_COLOR.to_html(false)
+	var gold_hex := UITheme.GOLD_COLOR.to_html(false)
+	var crystal_hex := UITheme.CRYSTAL_COLOR.to_html(false)
 
 	var stat_label := RichTextLabel.new()
 	stat_label.bbcode_enabled = true
@@ -190,11 +192,11 @@ func _build_monster_card(enemy_path: String) -> Control:
 	stat_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stat_label.text = (
 		"HP %d / ATK %d / DEF %d / SPD %d  [color=#%s](%d던전 기준)[/color]\n" +
-		"보상 Gold %d / Crystal %d"
+		"보상 [color=#%s]Gold %d[/color] / [color=#%s]Crystal %d[/color]"
 	) % [
 		int(data.max_hp * stat_mult), int(data.atk * stat_mult), int(data.def * stat_mult), data.spd,
 		color_hex, dungeon,
-		int(data.gold_reward * reward_mult), int(data.crystal_reward),
+		gold_hex, int(data.gold_reward * reward_mult), crystal_hex, int(data.crystal_reward),
 	]
 	info_vbox.add_child(stat_label)
 

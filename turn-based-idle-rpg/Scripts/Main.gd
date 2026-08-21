@@ -117,6 +117,7 @@ func _ready() -> void:
 	GameManager.character_unlocked.connect(_on_character_unlocked)
 	GameManager.dungeon_changed.connect(_on_dungeon_changed)
 	GameManager.gold_changed.connect(_refresh_currency_labels)
+	GameManager.crystal_changed.connect(_refresh_currency_labels)
 
 	_refresh_currency_labels()
 	_start_current_floor()
@@ -154,10 +155,33 @@ func _show_panel(index: int) -> void:
 ## 던전 정보/골드/크리스탈/전투 메시지 라벨에 공용 테마 색을 입힌다.
 func _style_top_labels() -> void:
 	UITheme.apply_title_style(menu_title_label, 16)
-	UITheme.apply_accent_font_color(dungeon_info_label)
-	gold_label.add_theme_color_override("font_color", UITheme.NEXT_STAT_COLOR)
-	crystal_label.add_theme_color_override("font_color", UITheme.MP_BAR_COLOR)
+	dungeon_info_label.add_theme_color_override("font_color", UITheme.DUNGEON_NAME_COLOR)
+	gold_label.add_theme_color_override("font_color", UITheme.GOLD_COLOR)
+	crystal_label.add_theme_color_override("font_color", UITheme.CRYSTAL_COLOR)
 	battle_message_label.add_theme_color_override("font_color", UITheme.TEXT_COLOR)
+	_add_currency_icons()
+
+
+## gold_label/crystal_label 앞에 작은 원형 아이콘을 붙인다. main.tscn에는 라벨만 있으므로,
+## 라벨을 새 HBoxContainer로 감싸고 그 안에 [아이콘, 기존 라벨] 순서로 넣는 식으로 코드에서
+## 처리한다(씬 파일을 직접 손대지 않아도 됨).
+func _add_currency_icons() -> void:
+	_wrap_label_with_icon(gold_label, UITheme.GOLD_COLOR)
+	_wrap_label_with_icon(crystal_label, UITheme.CRYSTAL_COLOR)
+
+
+func _wrap_label_with_icon(label: Label, color: Color) -> void:
+	var parent := label.get_parent()
+	var idx := label.get_index()
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	parent.add_child(row)
+	parent.move_child(row, idx)
+
+	parent.remove_child(label)
+	row.add_child(UITheme.create_currency_icon(color))
+	row.add_child(label)
 
 
 func _setup_enemy_unit_refs() -> void:
